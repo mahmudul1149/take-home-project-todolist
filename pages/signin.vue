@@ -9,7 +9,7 @@
 
       <button
         class="mx-auto w-[308px] h-[44px] flex justify-center items-center mt-12 border-solid border-[1px] cursor-pointer border-[#A37CFF] rounded-md"
-        @click="signInWithGoogle"
+        @click="store.signinWithGoogle"
       >
         <svg
           width="24"
@@ -61,6 +61,9 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useMainStore } from "../store/index";
+const store = useMainStore();
+</script>
 
 <style></style>
