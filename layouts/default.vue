@@ -1,11 +1,12 @@
 <template>
   <div>
+    <Header />
     <slot></slot>
   </div>
 </template>
 
-<script>
-export default {};
+<script setup>
+import Header from "../components/header";
 </script>
 
 <style></style>
