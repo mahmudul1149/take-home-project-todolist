@@ -66,10 +66,19 @@
                 Edit</NuxtLink
               >
               <button
+                v-if="store.user"
+                @click="deleteTodo(todo.id)"
                 class="bg-[#EC4A9D] text-[white] text-sm py-2 px-6 rounded-full"
               >
                 Delete
               </button>
+              <NuxtLink
+                v-else
+                to="/signin"
+                class="bg-[#EC4A9D] text-[white] text-sm py-2 px-6 rounded-full"
+              >
+                Delete
+              </NuxtLink>
             </div>
           </li>
         </ul>
@@ -130,6 +139,14 @@ const updateTodo = async () => {
     fetchData();
     isUpdating.value = false;
     editing.value = false;
+  }
+};
+const deleteTodo = async (id) => {
+  try {
+    await $axios.delete(`/todo/${id}`);
+    todos.value = todos.value.filter((todo) => todo.id !== id);
+  } catch (error) {
+    console.log(error);
   }
 };
 onMounted(() => {
