@@ -13,6 +13,7 @@
           name=""
           id=""
           v-model="newTodo"
+          @input="validateTitle"
           placeholder="Insert your todo"
         />
         <button
@@ -39,6 +40,8 @@
           >
         </div>
       </div>
+      <p v-if="titleError" class="text-red-400">{{ titleError }}</p>
+
       <div>
         <p v-if="isLoading" class="text-white text-center mt-4 text-2xl">
           Loading...
@@ -98,6 +101,7 @@ const isUpdating = ref(false);
 const editing = ref(false);
 const seletedIndex = ref(null);
 const newTodo = ref("");
+const titleError = ref("");
 const fetchData = async () => {
   try {
     const { data } = await $axios.get(`/todo/all`);
@@ -147,6 +151,13 @@ const deleteTodo = async (id) => {
     todos.value = todos.value.filter((todo) => todo.id !== id);
   } catch (error) {
     console.log(error);
+  }
+};
+const validateTitle = () => {
+  if (newTodo.value.length < 3) {
+    titleError.value = "Title must be at least 3 characters long.";
+  } else {
+    titleError.value = "";
   }
 };
 onMounted(() => {
