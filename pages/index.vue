@@ -12,13 +12,22 @@
           type="text"
           name=""
           id=""
+          v-model="newTodo"
           placeholder="Insert your todo"
         />
         <button
+          v-if="store.user"
+          @click="addTodo"
           class="bg-[#1F67CC] text-white border-none py-2 px-8 border rounded-full border-gray-500"
         >
-          Submit
+          {{ isSubMitting ? "submitting" : "Submit" }}
         </button>
+        <NuxtLink
+          v-else
+          to="/signin"
+          class="bg-[#1F67CC] text-white border-none py-2 px-8 border rounded-full border-gray-500"
+          >Submit</NuxtLink
+        >
       </div>
       <div>
         <p v-if="isLoading" class="text-white text-center mt-4 text-2xl">
@@ -28,7 +37,7 @@
           <li
             v-for="todo in todos"
             :key="todo.id"
-            class="py-2 px-2 flex items-center justify-between border-gray-300 border rounded w-full"
+            class="py-2 px-2 mb-4 flex items-center justify-between border-gray-300 border rounded w-full"
           >
             <p class="text-white">{{ todo.title }}</p>
             <div class="flex items-center gap-1">
@@ -51,9 +60,13 @@
 </template>
 
 <script setup>
+import { useMainStore } from "~/store/index";
 const { $axios } = useNuxtApp();
+const store = useMainStore();
 const todos = ref([]);
 const isLoading = ref(true);
+const isSubMitting = ref(false);
+const newTodo = ref("");
 const fetchData = async () => {
   try {
     const { data } = await $axios.get(`/todo/all`);
@@ -62,6 +75,20 @@ const fetchData = async () => {
     console.log(error);
   } finally {
     isLoading.value = false;
+  }
+};
+const addTodo = async () => {
+  try {
+    isSubMitting.value = true;
+    await $axios.post(`/todo`, {
+      title: newTodo.value,
+    });
+    todos.value.push({ title: newTodo.value });
+    newTodo.value = "";
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isSubMitting.value = false;
   }
 };
 onMounted(() => {
