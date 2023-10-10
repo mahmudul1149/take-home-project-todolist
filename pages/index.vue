@@ -16,19 +16,28 @@
           placeholder="Insert your todo"
         />
         <button
-          v-if="store.user"
-          @click="addTodo"
-          :disabled="newTodo === ''"
+          v-if="editing"
+          @click="updateTodo"
           class="bg-[#1F67CC] text-white border-none py-2 px-8 border rounded-full border-gray-500"
         >
-          {{ isSubMitting ? "submitting" : "Submit" }}
+          {{ isUpdating ? "updating" : "Update" }}
         </button>
-        <NuxtLink
-          v-else
-          to="/signin"
-          class="bg-[#1F67CC] text-white border-none py-2 px-8 border rounded-full border-gray-500"
-          >Submit</NuxtLink
-        >
+        <div v-else>
+          <button
+            v-if="store.user"
+            @click="addTodo"
+            :disabled="newTodo === ''"
+            class="bg-[#1F67CC] text-white border-none py-2 px-8 border rounded-full border-gray-500"
+          >
+            {{ isSubMitting ? "submitting" : "Submit" }}
+          </button>
+          <NuxtLink
+            v-else
+            to="/signin"
+            class="bg-[#1F67CC] text-white border-none py-2 px-8 border rounded-full border-gray-500"
+            >Submit</NuxtLink
+          >
+        </div>
       </div>
       <div>
         <p v-if="isLoading" class="text-white text-center mt-4 text-2xl">
@@ -43,10 +52,19 @@
             <p class="text-white">{{ todo.title }}</p>
             <div class="flex items-center gap-1">
               <button
+                v-if="store.user"
+                @click="updateUser(todo, todo.id)"
                 class="bg-[#a3e635] text-sm text-black py-2 px-6 rounded-full"
               >
                 Edit
               </button>
+              <NuxtLink
+                v-else
+                to="/signin"
+                class="bg-[#a3e635] text-sm text-black py-2 px-6 rounded-full"
+              >
+                Edit</NuxtLink
+              >
               <button
                 class="bg-[#EC4A9D] text-[white] text-sm py-2 px-6 rounded-full"
               >
@@ -67,6 +85,9 @@ const store = useMainStore();
 const todos = ref([]);
 const isLoading = ref(true);
 const isSubMitting = ref(false);
+const isUpdating = ref(false);
+const editing = ref(false);
+const seletedIndex = ref(null);
 const newTodo = ref("");
 const fetchData = async () => {
   try {
@@ -90,6 +111,25 @@ const addTodo = async () => {
     console.log(error);
   } finally {
     isSubMitting.value = false;
+  }
+};
+const updateUser = (todo, id) => {
+  editing.value = true;
+  seletedIndex.value = id;
+  newTodo.value = todo.title;
+};
+const updateTodo = async () => {
+  try {
+    isUpdating.value = true;
+    await $axios.put(`/todo/${seletedIndex.value}`, {
+      title: newTodo.value,
+    });
+    newTodo.value = "";
+  } catch (error) {
+  } finally {
+    fetchData();
+    isUpdating.value = false;
+    editing.value = false;
   }
 };
 onMounted(() => {
