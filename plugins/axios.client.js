@@ -1,16 +1,18 @@
 import axios from "axios";
+
 export default defineNuxtPlugin((nuxtApp) => {
-  const baseurl = nuxtApp.$config.public.baseURL;
+  const baseUrl = nuxtApp.$config.public.baseURL;
 
   let api = axios.create({
-    baseUrl: baseurl,
+    baseURL: baseUrl,
     headers: {
       common: {},
     },
   });
+
   return {
     provide: {
-      api: api,
+      axios: api,
     },
   };
 });

@@ -21,28 +21,16 @@
         </button>
       </div>
       <div>
+        <p v-if="isLoading" class="text-white text-center mt-4 text-2xl">
+          Loading...
+        </p>
         <ul class="pt-4">
           <li
+            v-for="todo in todos"
+            :key="todo.id"
             class="py-2 px-2 flex items-center justify-between border-gray-300 border rounded w-full"
           >
-            <p class="text-white">todo</p>
-            <div class="flex items-center gap-1">
-              <button
-                class="bg-[#a3e635] text-sm text-black py-2 px-6 rounded-full"
-              >
-                Edit
-              </button>
-              <button
-                class="bg-[#EC4A9D] text-[white] text-sm py-2 px-6 rounded-full"
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-          <li
-            class="py-2 px-2 flex items-center justify-between border-gray-300 border rounded w-full"
-          >
-            <p class="text-white">todo</p>
+            <p class="text-white">{{ todo.title }}</p>
             <div class="flex items-center gap-1">
               <button
                 class="bg-[#a3e635] text-sm text-black py-2 px-6 rounded-full"
@@ -62,6 +50,23 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const { $axios } = useNuxtApp();
+const todos = ref([]);
+const isLoading = ref(true);
+const fetchData = async () => {
+  try {
+    const { data } = await $axios.get(`/todo/all`);
+    todos.value = data.todos;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+onMounted(() => {
+  fetchData();
+});
+</script>
 
 <style></style>

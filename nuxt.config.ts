@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseURL: "https://dummyjson.com/",
+      baseURL: process.env.VITE_BASE_URL,
     },
   },
 });
