@@ -1,6 +1,11 @@
 import { defineStore } from "pinia";
 
-import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
@@ -17,6 +22,16 @@ export const useMainStore = defineStore("main", {
       } catch (error) {
         alert("Error");
       }
+    },
+    async logout() {
+      const auth = getAuth();
+      signOut(auth)
+        .then(() => {
+          this.user = null;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     setUser(user) {
       this.user = user;
