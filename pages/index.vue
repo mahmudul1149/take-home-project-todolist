@@ -18,6 +18,7 @@
         <button
           v-if="store.user"
           @click="addTodo"
+          :disabled="newTodo === ''"
           class="bg-[#1F67CC] text-white border-none py-2 px-8 border rounded-full border-gray-500"
         >
           {{ isSubMitting ? "submitting" : "Submit" }}
