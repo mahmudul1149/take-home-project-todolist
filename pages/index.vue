@@ -13,7 +13,7 @@
           name=""
           id=""
           v-model="newTodo"
-          @input="validateTitle"
+          @change="validateTitle"
           placeholder="Insert your todo"
         />
         <button
