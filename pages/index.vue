@@ -50,7 +50,7 @@
           <li
             v-for="todo in todos"
             :key="todo.id"
-            class="py-2 px-2 mb-4 flex items-center justify-between border-gray-300 border rounded w-full"
+            class="py-2 px-2 mb-4 flex items-center justify-between border-gray-300 border rounded-md w-full"
           >
             <p class="text-white">{{ todo.title }}</p>
             <div class="flex items-center gap-1">
@@ -118,7 +118,7 @@ const addTodo = async () => {
     await $axios.post(`/todo`, {
       title: newTodo.value,
     });
-    todos.value.push({ title: newTodo.value });
+    fetchData();
     newTodo.value = "";
   } catch (error) {
     console.log(error);
