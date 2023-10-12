@@ -125,13 +125,14 @@ const isLoading = ref(true);
 const isSubMitting = ref(false);
 const isUpdating = ref(false);
 const editing = ref(false);
-const seletedIndex = ref(null);
+const editingTodo = ref(null);
 const newTodo = ref("");
 const titleError = ref("");
 const fetchData = async () => {
   try {
     const { data } = await $axios.get(`/todo/all`);
     todos.value = data.todos;
+    console.log(data.todos);
   } catch (error) {
     console.log(error);
   } finally {
@@ -154,21 +155,24 @@ const addTodo = async () => {
 };
 const updateUser = (todo, id) => {
   editing.value = true;
-  seletedIndex.value = id;
+  editingTodo.value = todo;
   newTodo.value = todo.title;
 };
 const updateTodo = async () => {
-  try {
-    isUpdating.value = true;
-    await $axios.put(`/todo/${seletedIndex.value}`, {
-      title: newTodo.value,
-    });
-    newTodo.value = "";
-  } catch (error) {
-  } finally {
-    fetchData();
-    isUpdating.value = false;
-    editing.value = false;
+  if (editingTodo.value) {
+    try {
+      isUpdating.value = true;
+      await $axios.put(`/todo/${editingTodo.value.id}`, {
+        title: newTodo.value,
+      });
+      newTodo.value = "";
+    } catch (error) {
+    } finally {
+      fetchData();
+      isUpdating.value = false;
+      editing.value = false;
+      editingTodo.value = null;
+    }
   }
 };
 const deleteTodo = async (id) => {
@@ -186,6 +190,7 @@ const validateTitle = () => {
     titleError.value = "";
   }
 };
+
 onMounted(() => {
   fetchData();
 });
